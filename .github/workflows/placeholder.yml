@@ -1,0 +1,24 @@
+# 中心发布仓本身不构建产物；各组件源码仓的 Release 工作流会把资产同步到这里。
+# 保留一个轻量 workflow，便于在 Actions 页确认仓库已启用 GitHub Actions。
+name: Hub health
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "README.md"
+      - ".github/workflows/**"
+
+permissions:
+  contents: read
+
+jobs:
+  ok:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm hub repo
+        run: |
+          echo "OwlSpeak release hub is ready."
+          echo "Component releases sync assets into this repository's Releases."
