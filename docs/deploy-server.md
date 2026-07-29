@@ -5,7 +5,7 @@
 ## 架构要点
 
 ```
-Client ──HTTPS/WSS──► Caddy ──► owl-server :8080
+Client ──HTTPS/WSS──► Caddy ──► newt-server :8080
                                     │
                                     ├── PostgreSQL :5432
                                     └── gRPC mTLS :9443 ◄── SFU 主动外连
@@ -16,7 +16,7 @@ Client ──HTTPS/WSS──► Caddy ──► owl-server :8080
 | 项 | 说明 |
 |----|------|
 | 系统 | Linux amd64（推荐 Debian/Ubuntu） |
-| 二进制 | `owl-server`（Release 或自行交叉编译） |
+| 二进制 | `newt-server`（Release 或自行交叉编译） |
 | 依赖 | Docker（跑 PostgreSQL）、Caddy（TLS 反代） |
 | DNS | 面板域名 A 记录指向本机公网 IP |
 | 端口 | `80/443` 公网；`8080`、`5432`、`9443` 建议仅本机 |
@@ -33,7 +33,7 @@ Client ──HTTPS/WSS──► Caddy ──► owl-server :8080
 
 ## 1. 准备二进制
 
-从 [NewtSpeak Releases](https://github.com/NewtSpeak/NewtSpeak/releases) 下载 `owl-server-<ver>-linux-amd64`，或本机构建：
+从 [NewtSpeak Releases](https://github.com/NewtSpeak/NewtSpeak/releases) 下载 `newt-server-<ver>-linux-amd64`，或本机构建：
 
 ```bash
 # monorepo：先构建前端再打进二进制
@@ -55,7 +55,7 @@ mkdir -p /opt/newtspeak/data/server
 services:
   postgres:
     image: postgres:18-alpine
-    container_name: owl-postgres
+    container_name: newt-postgres
     restart: unless-stopped
     environment:
       POSTGRES_DB: owl
@@ -64,7 +64,7 @@ services:
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
-      - owl-postgres-data:/var/lib/postgresql
+      - newt-postgres-data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U owl -d owl"]
       interval: 5s
@@ -72,7 +72,7 @@ services:
       retries: 20
 
 volumes:
-  owl-postgres-data:
+  newt-postgres-data:
 ```
 
 ```bash
@@ -140,9 +140,9 @@ WantedBy=multi-user.target
 
 ```bash
 systemctl daemon-reload
-systemctl enable --now owl-server
-systemctl status owl-server
-journalctl -u owl-server -f
+systemctl enable --now newt-server
+systemctl status newt-server
+journalctl -u newt-server -f
 ```
 
 ## 5. Caddy（面板 TLS）
@@ -176,9 +176,9 @@ curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8080/
 ## 升级
 
 ```bash
-systemctl stop owl-server
+systemctl stop newt-server
 install -D newt-server-new /opt/newtspeak/bin/newt-server
-systemctl start owl-server
+systemctl start newt-server
 ```
 
 保留 `newt-server.env` 与 `data/server/`（含集群 CA / Media Token 密钥，勿丢）。

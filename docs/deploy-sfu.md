@@ -5,9 +5,9 @@
 ## 架构要点
 
 ```
-Client ──WSS──► Caddy ──► owl-sfu :8443（信令）
-Client ──UDP──► owl-sfu :3478（媒体，直连，不经 Caddy）
-owl-sfu ──mTLS gRPC──► Server :9443（主动外连，不反向暴露管理面）
+Client ──WSS──► Caddy ──► newt-sfu :8443（信令）
+Client ──UDP──► newt-sfu :3478（媒体，直连，不经 Caddy）
+newt-sfu ──mTLS gRPC──► Server :9443（主动外连，不反向暴露管理面）
 ```
 
 - 首次：`enroll token` → 领 mTLS 证书 → 落盘 `DATA_DIR`
@@ -18,7 +18,7 @@ owl-sfu ──mTLS gRPC──► Server :9443（主动外连，不反向暴露�
 | 项 | 说明 |
 |----|------|
 | 系统 | Linux amd64 |
-| 二进制 | `owl-sfu` |
+| 二进制 | `newt-sfu` |
 | 已就绪 | Newt-Server 在线，控制面 gRPC 可达 |
 | DNS | SFU 域名 A 记录 → 本机公网 IP（信令 WSS） |
 | 公网 IP | 填入 `NEWTSFU_PUBLIC_IP`（NAT1To1 host candidate） |
@@ -43,11 +43,11 @@ owl-sfu ──mTLS gRPC──► Server :9443（主动外连，不反向暴露�
 
 ## 1. 准备二进制
 
-Release 下载 `owl-sfu-<ver>-linux-amd64`，或：
+Release 下载 `newt-sfu-<ver>-linux-amd64`，或：
 
 ```bash
 cd Newt-SFU
-CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o bin/newt-sfu ./cmd/owl-sfu
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o bin/newt-sfu ./cmd/newt-sfu
 install -D bin/newt-sfu /opt/newtspeak/bin/newt-sfu
 mkdir -p /opt/newtspeak/data/sfu
 ```
@@ -141,8 +141,8 @@ WantedBy=multi-user.target
 
 ```bash
 systemctl daemon-reload
-systemctl enable --now owl-sfu
-journalctl -u owl-sfu -f
+systemctl enable --now newt-sfu
+journalctl -u newt-sfu -f
 # 期望：enroll 成功 → Register → 心跳
 ```
 
@@ -195,9 +195,9 @@ curl -fsS http://127.0.0.1:8443/healthz
 ## 升级
 
 ```bash
-systemctl stop owl-sfu          # 默认 drain ~60s 等会话迁空
+systemctl stop newt-sfu          # 默认 drain ~60s 等会话迁空
 install -D newt-sfu-new /opt/newtspeak/bin/newt-sfu
-systemctl start owl-sfu
+systemctl start newt-sfu
 ```
 
 保留 `data/sfu/`（证书与密钥）。也可在管理后台走远程升级（Server 配置 `SFU_RELEASE_DIR`）。

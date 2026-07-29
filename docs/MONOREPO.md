@@ -65,7 +65,7 @@
 3. **独立 SFU**（可选）：见 `Newt-SFU` 与 [deploy/sfu](./docs/deploy/sfu.md)  
 4. **Bot / Agent**（可选）：`NewtBotSdk`、`Newt-Agent`
 
-生产推荐：独立 `owl-server` + `owl-sfu` + Caddy + PostgreSQL（`deploy/prod/install.sh`）。
+生产推荐：独立 `newt-server` + `newt-sfu` + Caddy + PostgreSQL（`deploy/prod/install.sh`）。
 
 ## 许可证
 

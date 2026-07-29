@@ -21,7 +21,7 @@
 | | [deploy/sfu.md](./deploy/sfu.md) | Newt-SFU 媒体节点部署 |
 | **Bot SDK** | [sdk/usage.md](./sdk/usage.md) | 机器人 SDK 使用 |
 | | [sdk/api.md](./sdk/api.md) | `/bot-api/v1` 接口调用 |
-| **Agent CLI** | [agent/usage.md](./agent/usage.md) | `owl` CLI / MCP 使用 |
+| **Agent CLI** | [agent/usage.md](./agent/usage.md) | `newt` CLI / MCP 使用 |
 | | [agent/api.md](./agent/api.md) | 命令、Tools、底层 API |
 | **架构** | [architecture/](./architecture/) | 运行时 / 内部结构 / 时序图 |
 | **设计** | [design/](./design/) | monorepo 级功能设计记录 |
