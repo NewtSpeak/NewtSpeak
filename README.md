@@ -1,52 +1,85 @@
-# OwlSpeak 统一发布仓库
+# OwlSpeak（统一发布仓）
 
-本仓库是 [OwlSpeak](https://github.com/OwlSpeak) 组织的**版本发布中心**，汇总：
+[OwlSpeak](https://github.com/OwlSpeak) 组织的 **版本发布中心**：不承载运行时源码，只汇总各组件 **安装包 / 二进制 / changelog**，方便用户一站下载。
 
-| 组件 | 源码仓库 | 产物 |
-|------|----------|------|
-| 桌面客户端 | [Owl-Desktop](https://github.com/OwlSpeak/Owl-Desktop) | Windows / macOS / Linux 安装包 + **可独立部署的 Web 前端包** |
-| 控制面服务端 | [Owl-Server](https://github.com/OwlSpeak/Owl-Server) | 多平台 `owl-server` 二进制 |
-| 媒体面 SFU | [Owl-SFU](https://github.com/OwlSpeak/Owl-SFU) | 多平台 `owl-sfu` 二进制 |
-| 未来 App | 待定 | 移动端安装包等 |
+开发与贡献请到各源码仓；本仓用于 **Release 分发**。
 
-## 如何获取更新
+## 发布了什么
 
-打开右侧 **[Releases](https://github.com/OwlSpeak/OwlSpeak/releases)**，按版本号（如 `v0.1.0`）下载对应平台文件。
+| 组件 | 源码仓库 | 本仓产物 |
+|------|----------|----------|
+| 桌面客户端 | [Owl-Desktop](https://github.com/OwlSpeak/Owl-Desktop) | Windows / macOS / Linux 安装包 + **Web 静态 zip** |
+| 控制面 | [Owl-Server](https://github.com/OwlSpeak/Owl-Server) | 多平台 `owl-server` 二进制 |
+| 媒体面 | [Owl-SFU](https://github.com/OwlSpeak/Owl-SFU) | 多平台 `owl-sfu` 二进制 |
+| 机器人 SDK | [OwlBotSdk](https://github.com/OwlSpeak/OwlBotSdk) | 随源码仓发布；文档见 monorepo `docs/sdk` |
+| Agent CLI | [Owl-Agent](https://github.com/OwlSpeak/Owl-Agent) | 多平台 `owl` 二进制（若已接入 hub） |
+| 移动端 | 待定 | — |
 
-同一版本号下会聚合各组件的：
+## 如何获取
 
-- 安装包 / 二进制产物
-- 各组件 changelog（根据 commit 与作者补充说明自动汇总）
+打开 **[Releases](https://github.com/OwlSpeak/OwlSpeak/releases)**，按版本号（如 `v0.1.0`）下载。
 
-## 版本约定
+同一 tag 下通常包含：
 
-- 标签格式：`vMAJOR.MINOR.PATCH`（例如 `v0.1.0`）
-- **源码仓**与**本发布仓**使用相同版本标签
-- 各源码仓仍会在自己仓库创建 Release（便于开发者查阅）
-- 源码仓发版成功后，会通过 CI **自动同步**产物与说明到本仓同版本 Release
+- 各平台安装包 / 二进制  
+- 各组件 changelog（commit + 作者说明自动汇总）  
+- 校验和文件  
 
-## 产物命名（摘要）
+## 产物命名
 
 | 前缀 | 说明 |
 |------|------|
 | `owl-desktop-*` | 桌面安装包（dmg / msi / deb / AppImage 等） |
-| `owl-desktop-web-*.zip` | 纯前端静态包（可放到任意静态托管 / Nginx） |
-| `owl-server-<ver>-<os>-<arch>` | 服务端二进制 |
-| `owl-sfu-<ver>-<os>-<arch>` | SFU 二进制 |
+| `owl-desktop-web-*.zip` | 纯前端静态包（Nginx / 任意静态托管） |
+| `owl-server-<ver>-<os>-<arch>` | 控制面服务端 |
+| `owl-sfu-<ver>-<os>-<arch>` | 媒体面 SFU |
+| `owl-*`（Agent 等） | 以当次 Release 说明为准 |
 | `SHA256SUMS-*` | 校验和 |
+
+## 版本约定
+
+- 标签：`vMAJOR.MINOR.PATCH`（例 `v0.1.0`）  
+- **源码仓**与**本发布仓**使用相同版本 tag  
+- 各源码仓仍可自建 Release（便于开发者）  
+- 源码仓发版成功后，CI **自动同步**产物与说明到本仓同版本 Release  
+
+## 自托管最小组合
+
+从本仓（或对应源码仓 Release）取：
+
+1. `owl-server` + PostgreSQL + 反代（Caddy）  
+2. `owl-sfu`（语音；可与 Server 同机或独立）  
+3. 桌面安装包，或 `owl-desktop-web-*.zip`  
+
+部署说明：
+
+- [Server 部署](./docs/deploy-server.md)  
+- [SFU 部署](./docs/deploy-sfu.md)  
+- [生态总览](./docs/MONOREPO.md) · [文档索引](./docs/INDEX.md)  
 
 ## 给维护者
 
-1. 在各源码仓打标签：`git tag -a vX.Y.Z -m "本版本重点说明..."` 并 `git push origin vX.Y.Z`
-2. 源码仓 Actions 构建 → 本仓 Release + 本仓 Release
-3. 组织级 Secret（各源码仓需要）：
+1. 源码仓：`git tag -a vX.Y.Z -m "…"` → `git push origin vX.Y.Z`  
+2. 源码仓 Actions 构建 → 同步到本仓 Release  
+3. 各源码仓需组织 Secret：
 
    | Secret | 用途 |
    |--------|------|
-   | `RELEASE_HUB_TOKEN` | 具有 `OwlSpeak/OwlSpeak` 写权限的 PAT（或 fine-grained token：Contents 读写） |
+   | `RELEASE_HUB_TOKEN` | 对本仓 `OwlSpeak/OwlSpeak` 有 Contents 写权限的 PAT |
 
-4. 可选：在源码仓根目录维护 `RELEASE_NOTES.md`，会优先拼进发版说明
+4. 可选：源码仓根目录 `RELEASE_NOTES.md` 优先拼进发版说明  
 
----
+## 生态文档
 
-商业授权与双许可说明见各源码仓 `LICENSE*`。
+| 文档 | 说明 |
+|------|------|
+| [docs/INDEX.md](./docs/INDEX.md) | 文档总索引 |
+| [docs/MONOREPO.md](./docs/MONOREPO.md) | 组件总览与架构 |
+| [docs/deploy-server.md](./docs/deploy-server.md) | Server 部署 |
+| [docs/deploy-sfu.md](./docs/deploy-sfu.md) | SFU 部署 |
+| [OwlBotSdk](https://github.com/OwlSpeak/OwlBotSdk) | Bot SDK |
+| [Owl-Agent](https://github.com/OwlSpeak/Owl-Agent) | Agent CLI |
+
+## 许可证
+
+商业授权与双许可条款见 **各源码仓** `LICENSE*`，不以本仓替代。
