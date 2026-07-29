@@ -1,4 +1,4 @@
-# Owl-Server 部署
+# Newt-Server 部署
 
 控制面：HTTP API、管理 SPA、Gateway WS、SFU 控制 gRPC。媒体不经 Server。
 
@@ -33,11 +33,11 @@ Client ──HTTPS/WSS──► Caddy ──► owl-server :8080
 
 ## 1. 准备二进制
 
-从 [OwlSpeak Releases](https://github.com/OwlSpeak/OwlSpeak/releases) 下载 `owl-server-<ver>-linux-amd64`，或本机构建：
+从 [NewtSpeak Releases](https://github.com/NewtSpeak/NewtSpeak/releases) 下载 `owl-server-<ver>-linux-amd64`，或本机构建：
 
 ```bash
 # monorepo：先构建前端再打进二进制
-cd Owl-Server/frontend && bun run build
+cd Newt-Server/frontend && bun run build
 # 将 frontend/build/client 拷入 backend/internal/web/dist
 cd ../backend
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o bin/owl-server ./cmd/server
@@ -120,7 +120,7 @@ EMBEDDED_SFU=false
 
 ```ini
 [Unit]
-Description=OwlSpeak Control Server
+Description=NewtSpeak Control Server
 After=network-online.target docker.service
 Wants=network-online.target
 Requires=docker.service

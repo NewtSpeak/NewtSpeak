@@ -20,5 +20,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Confirm hub repo
         run: |
-          echo "OwlSpeak release hub is ready."
+          echo "NewtSpeak release hub is ready."
           echo "Component releases sync assets into this repository's Releases."

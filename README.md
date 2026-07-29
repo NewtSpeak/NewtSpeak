@@ -1,6 +1,6 @@
-# OwlSpeak（统一发布仓）
+# NewtSpeak（统一发布仓）
 
-[OwlSpeak](https://github.com/OwlSpeak) 组织的 **版本发布中心**：不承载运行时源码，只汇总各组件 **安装包 / 二进制 / changelog**，方便用户一站下载。
+[NewtSpeak](https://github.com/NewtSpeak) 组织的 **版本发布中心**：不承载运行时源码，只汇总各组件 **安装包 / 二进制 / changelog**，方便用户一站下载。
 
 开发与贡献请到各源码仓；本仓用于 **Release 分发**。
 
@@ -8,16 +8,16 @@
 
 | 组件 | 源码仓库 | 本仓产物 |
 |------|----------|----------|
-| 桌面客户端 | [Owl-Desktop](https://github.com/OwlSpeak/Owl-Desktop) | Windows / macOS / Linux 安装包 + **Web 静态 zip** |
-| 控制面 | [Owl-Server](https://github.com/OwlSpeak/Owl-Server) | 多平台 `owl-server` 二进制 |
-| 媒体面 | [Owl-SFU](https://github.com/OwlSpeak/Owl-SFU) | 多平台 `owl-sfu` 二进制 |
-| 机器人 SDK | [OwlBotSdk](https://github.com/OwlSpeak/OwlBotSdk) | 随源码仓发布；文档见 monorepo `docs/sdk` |
-| Agent CLI | [Owl-Agent](https://github.com/OwlSpeak/Owl-Agent) | 多平台 `owl` 二进制（若已接入 hub） |
+| 桌面客户端 | [Newt-Desktop](https://github.com/NewtSpeak/Newt-Desktop) | Windows / macOS / Linux 安装包 + **Web 静态 zip** |
+| 控制面 | [Newt-Server](https://github.com/NewtSpeak/Newt-Server) | 多平台 `owl-server` 二进制 |
+| 媒体面 | [Newt-SFU](https://github.com/NewtSpeak/Newt-SFU) | 多平台 `owl-sfu` 二进制 |
+| 机器人 SDK | [NewtBotSdk](https://github.com/NewtSpeak/NewtBotSdk) | 随源码仓发布；文档见 monorepo `docs/sdk` |
+| Agent CLI | [Newt-Agent](https://github.com/NewtSpeak/Newt-Agent) | 多平台 `owl` 二进制（若已接入 hub） |
 | 移动端 | 待定 | — |
 
 ## 如何获取
 
-打开 **[Releases](https://github.com/OwlSpeak/OwlSpeak/releases)**，按版本号（如 `v0.1.0`）下载。
+打开 **[Releases](https://github.com/NewtSpeak/NewtSpeak/releases)**，按版本号（如 `v0.1.0`）下载。
 
 同一 tag 下通常包含：
 
@@ -65,7 +65,7 @@
 
    | Secret | 用途 |
    |--------|------|
-   | `RELEASE_HUB_TOKEN` | 对本仓 `OwlSpeak/OwlSpeak` 有 Contents 写权限的 PAT |
+   | `RELEASE_HUB_TOKEN` | 对本仓 `NewtSpeak/NewtSpeak` 有 Contents 写权限的 PAT |
 
 4. 可选：源码仓根目录 `RELEASE_NOTES.md` 优先拼进发版说明  
 
@@ -77,8 +77,8 @@
 | [docs/MONOREPO.md](./docs/MONOREPO.md) | 组件总览与架构 |
 | [docs/deploy-server.md](./docs/deploy-server.md) | Server 部署 |
 | [docs/deploy-sfu.md](./docs/deploy-sfu.md) | SFU 部署 |
-| [OwlBotSdk](https://github.com/OwlSpeak/OwlBotSdk) | Bot SDK |
-| [Owl-Agent](https://github.com/OwlSpeak/Owl-Agent) | Agent CLI |
+| [NewtBotSdk](https://github.com/NewtSpeak/NewtBotSdk) | Bot SDK |
+| [Newt-Agent](https://github.com/NewtSpeak/Newt-Agent) | Agent CLI |
 
 ## 许可证
 

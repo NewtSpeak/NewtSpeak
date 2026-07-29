@@ -1,4 +1,4 @@
-# Owl-SFU 部署
+# Newt-SFU 部署
 
 媒体面节点：WebRTC 选路转发。控制面见 [server.md](./server.md)。
 
@@ -19,7 +19,7 @@ owl-sfu ──mTLS gRPC──► Server :9443（主动外连，不反向暴露�
 |----|------|
 | 系统 | Linux amd64 |
 | 二进制 | `owl-sfu` |
-| 已就绪 | Owl-Server 在线，控制面 gRPC 可达 |
+| 已就绪 | Newt-Server 在线，控制面 gRPC 可达 |
 | DNS | SFU 域名 A 记录 → 本机公网 IP（信令 WSS） |
 | 公网 IP | 填入 `OWLSFU_PUBLIC_IP`（NAT1To1 host candidate） |
 
@@ -46,7 +46,7 @@ owl-sfu ──mTLS gRPC──► Server :9443（主动外连，不反向暴露�
 Release 下载 `owl-sfu-<ver>-linux-amd64`，或：
 
 ```bash
-cd Owl-SFU
+cd Newt-SFU
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o bin/owl-sfu ./cmd/owl-sfu
 install -D bin/owl-sfu /opt/owlspeak/bin/owl-sfu
 mkdir -p /opt/owlspeak/data/sfu
@@ -112,7 +112,7 @@ OWLSFU_MAX_USERS=1200
 | `OWLSFU_ENROLL_TOKEN` | **仅首次**；成功后可清空，证书在 `DATA_DIR` |
 | `OWLSFU_NO_TLS=true` + 本机 listen | 生产由 Caddy 终结 WSS；勿把 8443 直接暴露公网明文 |
 
-也可用 `config.yaml`（见 `Owl-SFU/config.example.yaml`），env 优先覆盖。
+也可用 `config.yaml`（见 `Newt-SFU/config.example.yaml`），env 优先覆盖。
 
 ## 4. systemd
 
@@ -120,7 +120,7 @@ OWLSFU_MAX_USERS=1200
 
 ```ini
 [Unit]
-Description=OwlSpeak SFU Media Node
+Description=NewtSpeak SFU Media Node
 After=network-online.target
 # 同机部署时可依赖 server：
 # After=network-online.target owl-server.service
