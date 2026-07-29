@@ -1,0 +1,15 @@
+[submodule "Newt-Server"]
+	path = Newt-Server
+	url = D:\\\\研发\\\\OwlSpeak\\\\Newt-Server
+[submodule "Newt-Desktop"]
+	path = Newt-Desktop
+	url = D:\\\\研发\\\\OwlSpeak\\\\Newt-Desktop
+[submodule "Newt-SFU"]
+	path = Newt-SFU
+	url = D:\\\\研发\\\\OwlSpeak\\\\Newt-SFU
+[submodule "NewtBotSdk"]
+	path = NewtBotSdk
+	url = D:\\\\研发\\\\OwlSpeak\\\\NewtBotSdk
+[submodule "Newt-Agent"]
+	path = Newt-Agent
+	url = D:\\\\研发\\\\OwlSpeak\\\\Newt-Agent

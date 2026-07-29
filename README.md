@@ -1,5 +1,7 @@
 # NewtSpeak
 
+![NewtSpeak 主视觉封面](1.png)
+
 **开源的 [Discord](https://discord.com) / [KOOK](https://www.kookapp.cn) 替代方案** — 自托管组队语音与社区协作软件。
 
 数据在你自己的服务器上：多服务器（Guild）、文字频道、语音/舞台通话、屏幕共享、细粒度权限、贴图表情、好友私信，以及机器人与 AI 运维扩展。
