@@ -21,7 +21,7 @@ owl-sfu ──mTLS gRPC──► Server :9443（主动外连，不反向暴露�
 | 二进制 | `owl-sfu` |
 | 已就绪 | Newt-Server 在线，控制面 gRPC 可达 |
 | DNS | SFU 域名 A 记录 → 本机公网 IP（信令 WSS） |
-| 公网 IP | 填入 `OWLSFU_PUBLIC_IP`（NAT1To1 host candidate） |
+| 公网 IP | 填入 `NEWTSFU_PUBLIC_IP`（NAT1To1 host candidate） |
 
 ## 端口
 
@@ -35,9 +35,9 @@ owl-sfu ──mTLS gRPC──► Server :9443（主动外连，不反向暴露�
 ## 目录约定
 
 ```
-/opt/owlspeak/
-  bin/owl-sfu
-  owl-sfu.env
+/opt/newtspeak/
+  bin/newt-sfu
+  newt-sfu.env
   data/sfu/             # 证书、密钥、CA、控制面地址（enroll 后生成）
 ```
 
@@ -47,9 +47,9 @@ Release 下载 `owl-sfu-<ver>-linux-amd64`，或：
 
 ```bash
 cd Newt-SFU
-CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o bin/owl-sfu ./cmd/owl-sfu
-install -D bin/owl-sfu /opt/owlspeak/bin/owl-sfu
-mkdir -p /opt/owlspeak/data/sfu
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o bin/newt-sfu ./cmd/owl-sfu
+install -D bin/newt-sfu /opt/newtspeak/bin/newt-sfu
+mkdir -p /opt/newtspeak/data/sfu
 ```
 
 ## 2. 在 Server 创建节点占位
@@ -64,73 +64,73 @@ mkdir -p /opt/owlspeak/data/sfu
 
 ## 3. 环境变量
 
-`/opt/owlspeak/owl-sfu.env`（`chmod 600`）。全部可用 `OWLSFU_` 覆盖 `config.yaml`。
+`/opt/newtspeak/newt-sfu.env`（`chmod 600`）。全部可用 `NEWTSFU_` 覆盖 `config.yaml`。
 
 ### 与 Server 同机（推荐起步）
 
 ```bash
-OWLSFU_NODE_ID=sfu-node-1
-OWLSFU_ENROLL_TOKEN=<面板拿到的一次性 token>
-OWLSFU_SERVER_ENROLL_ENDPOINT=127.0.0.1:9443
-OWLSFU_ENROLL_INSECURE=true          # 仅首次 enroll 跳过校验；领证后控制通道严格 mTLS
+NEWTSFU_NODE_ID=sfu-node-1
+NEWTSFU_ENROLL_TOKEN=<面板拿到的一次性 token>
+NEWTSFU_SERVER_ENROLL_ENDPOINT=127.0.0.1:9443
+NEWTSFU_ENROLL_INSECURE=true          # 仅首次 enroll 跳过校验；领证后控制通道严格 mTLS
 
-OWLSFU_DATA_DIR=/opt/owlspeak/data/sfu
-OWLSFU_WSS_LISTEN=127.0.0.1:8443
-OWLSFU_NO_TLS=true                   # TLS 由 Caddy 终结
-OWLSFU_MEDIA_UDP_PORT=3478
-OWLSFU_PUBLIC_IP=<本机公网 IP>
-OWLSFU_ADVERTISE_WSS_URL=wss://owl-sfu.example.com/ws
-OWLSFU_CASCADE_LISTEN=127.0.0.1:8843
-OWLSFU_MAX_USERS=1200
+NEWTSFU_DATA_DIR=/opt/newtspeak/data/sfu
+NEWTSFU_WSS_LISTEN=127.0.0.1:8443
+NEWTSFU_NO_TLS=true                   # TLS 由 Caddy 终结
+NEWTSFU_MEDIA_UDP_PORT=3478
+NEWTSFU_PUBLIC_IP=<本机公网 IP>
+NEWTSFU_ADVERTISE_WSS_URL=wss://newt-sfu.example.com/ws
+NEWTSFU_CASCADE_LISTEN=127.0.0.1:8843
+NEWTSFU_MAX_USERS=1200
 ```
 
 ### 独立 SFU 机（外置节点）
 
 ```bash
-OWLSFU_NODE_ID=sfu-node-2
-OWLSFU_ENROLL_TOKEN=<token>
-OWLSFU_SERVER_ENROLL_ENDPOINT=<server公网或内网>:9443
+NEWTSFU_NODE_ID=sfu-node-2
+NEWTSFU_ENROLL_TOKEN=<token>
+NEWTSFU_SERVER_ENROLL_ENDPOINT=<server公网或内网>:9443
 # 若 Server 证书 SAN 已含该地址，可关 insecure：
-OWLSFU_ENROLL_INSECURE=false
+NEWTSFU_ENROLL_INSECURE=false
 
-OWLSFU_DATA_DIR=/opt/owlspeak/data/sfu
-OWLSFU_WSS_LISTEN=127.0.0.1:8443
-OWLSFU_NO_TLS=true
-OWLSFU_MEDIA_UDP_PORT=3478
-OWLSFU_PUBLIC_IP=<本 SFU 公网 IP>
-OWLSFU_ADVERTISE_WSS_URL=wss://sfu2.example.com/ws
-OWLSFU_CASCADE_LISTEN=0.0.0.0:8843
+NEWTSFU_DATA_DIR=/opt/newtspeak/data/sfu
+NEWTSFU_WSS_LISTEN=127.0.0.1:8443
+NEWTSFU_NO_TLS=true
+NEWTSFU_MEDIA_UDP_PORT=3478
+NEWTSFU_PUBLIC_IP=<本 SFU 公网 IP>
+NEWTSFU_ADVERTISE_WSS_URL=wss://sfu2.example.com/ws
+NEWTSFU_CASCADE_LISTEN=0.0.0.0:8843
 # 多节点级联时上报对端可达地址：
-# OWLSFU_ADVERTISE_CASCADE_ENDPOINT=<公网IP>:8843
-OWLSFU_MAX_USERS=1200
+# NEWTSFU_ADVERTISE_CASCADE_ENDPOINT=<公网IP>:8843
+NEWTSFU_MAX_USERS=1200
 ```
 
 | 关键项 | 说明 |
 |--------|------|
-| `OWLSFU_PUBLIC_IP` | 客户端 ICE 用的公网 IP；NAT 后必填 |
-| `OWLSFU_ADVERTISE_WSS_URL` | 上报给 Server、下发给客户端的信令地址 |
-| `OWLSFU_ENROLL_TOKEN` | **仅首次**；成功后可清空，证书在 `DATA_DIR` |
-| `OWLSFU_NO_TLS=true` + 本机 listen | 生产由 Caddy 终结 WSS；勿把 8443 直接暴露公网明文 |
+| `NEWTSFU_PUBLIC_IP` | 客户端 ICE 用的公网 IP；NAT 后必填 |
+| `NEWTSFU_ADVERTISE_WSS_URL` | 上报给 Server、下发给客户端的信令地址 |
+| `NEWTSFU_ENROLL_TOKEN` | **仅首次**；成功后可清空，证书在 `DATA_DIR` |
+| `NEWTSFU_NO_TLS=true` + 本机 listen | 生产由 Caddy 终结 WSS；勿把 8443 直接暴露公网明文 |
 
 也可用 `config.yaml`（见 `Newt-SFU/config.example.yaml`），env 优先覆盖。
 
 ## 4. systemd
 
-`/etc/systemd/system/owl-sfu.service`：
+`/etc/systemd/system/newt-sfu.service`：
 
 ```ini
 [Unit]
 Description=NewtSpeak SFU Media Node
 After=network-online.target
 # 同机部署时可依赖 server：
-# After=network-online.target owl-server.service
+# After=network-online.target newt-server.service
 Wants=network-online.target
 
 [Service]
 Type=simple
-WorkingDirectory=/opt/owlspeak
-EnvironmentFile=/opt/owlspeak/owl-sfu.env
-ExecStart=/opt/owlspeak/bin/owl-sfu
+WorkingDirectory=/opt/newtspeak
+EnvironmentFile=/opt/newtspeak/newt-sfu.env
+ExecStart=/opt/newtspeak/bin/newt-sfu
 Restart=on-failure
 RestartSec=3
 LimitNOFILE=1048576
@@ -146,12 +146,12 @@ journalctl -u owl-sfu -f
 # 期望：enroll 成功 → Register → 心跳
 ```
 
-Enroll 成功后可从 env 去掉 `OWLSFU_ENROLL_TOKEN`（证书已落盘）。
+Enroll 成功后可从 env 去掉 `NEWTSFU_ENROLL_TOKEN`（证书已落盘）。
 
 ## 5. Caddy（信令 TLS）
 
 ```caddyfile
-owl-sfu.example.com {
+newt-sfu.example.com {
 	encode gzip zstd
 	reverse_proxy 127.0.0.1:8443 {
 		header_up Host {host}
@@ -196,7 +196,7 @@ curl -fsS http://127.0.0.1:8443/healthz
 
 ```bash
 systemctl stop owl-sfu          # 默认 drain ~60s 等会话迁空
-install -D owl-sfu-new /opt/owlspeak/bin/owl-sfu
+install -D newt-sfu-new /opt/newtspeak/bin/newt-sfu
 systemctl start owl-sfu
 ```
 

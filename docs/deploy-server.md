@@ -24,9 +24,9 @@ Client ──HTTPS/WSS──► Caddy ──► owl-server :8080
 ## 目录约定
 
 ```
-/opt/owlspeak/
-  bin/owl-server
-  owl-server.env
+/opt/newtspeak/
+  bin/newt-server
+  newt-server.env
   data/server/          # CA、Media Token 密钥、附件等
   docker-compose.yml    # 仅 PostgreSQL
 ```
@@ -40,18 +40,18 @@ Client ──HTTPS/WSS──► Caddy ──► owl-server :8080
 cd Newt-Server/frontend && bun run build
 # 将 frontend/build/client 拷入 backend/internal/web/dist
 cd ../backend
-CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o bin/owl-server ./cmd/server
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o bin/newt-server ./cmd/server
 ```
 
 ```bash
-install -D bin/owl-server /opt/owlspeak/bin/owl-server
-mkdir -p /opt/owlspeak/data/server
+install -D bin/newt-server /opt/newtspeak/bin/newt-server
+mkdir -p /opt/newtspeak/data/server
 ```
 
 ## 2. PostgreSQL
 
 ```bash
-# /opt/owlspeak/docker-compose.yml
+# /opt/newtspeak/docker-compose.yml
 services:
   postgres:
     image: postgres:18-alpine
@@ -76,14 +76,14 @@ volumes:
 ```
 
 ```bash
-echo "POSTGRES_PASSWORD=<强随机>" > /opt/owlspeak/.env
-chmod 600 /opt/owlspeak/.env
-cd /opt/owlspeak && docker compose up -d
+echo "POSTGRES_PASSWORD=<强随机>" > /opt/newtspeak/.env
+chmod 600 /opt/newtspeak/.env
+cd /opt/newtspeak && docker compose up -d
 ```
 
 ## 3. 环境变量
 
-`/opt/owlspeak/owl-server.env`（`chmod 600`）：
+`/opt/newtspeak/newt-server.env`（`chmod 600`）：
 
 ```bash
 APP_ENV=production
@@ -92,14 +92,14 @@ DATABASE_URL=postgres://owl:<PG密码>@127.0.0.1:5432/owl?sslmode=disable
 JWT_SECRET=<≥32 字符随机串>
 ACCESS_TOKEN_TTL=15m
 REFRESH_TOKEN_TTL=720h
-DATA_DIR=/opt/owlspeak/data/server
-PUBLIC_BASE_URL=https://owl-panel.example.com
+DATA_DIR=/opt/newtspeak/data/server
+PUBLIC_BASE_URL=https://newt-panel.example.com
 AUDIT_INGEST_TOKEN=<强随机>          # 生产开启审计上传必填
 
 # SFU 控制面（本机 SFU 用 127.0.0.1；外置节点改可达地址）
 SFU_GRPC_ADDRESS=0.0.0.0:9443
 SFU_CONTROL_PUBLIC_ENDPOINT=127.0.0.1:9443
-SFU_CONTROL_TLS_SANS=localhost,127.0.0.1,owl-panel.example.com
+SFU_CONTROL_TLS_SANS=localhost,127.0.0.1,newt-panel.example.com
 
 # 生产用独立 SFU，不要开内嵌
 EMBEDDED_SFU=false
@@ -116,7 +116,7 @@ EMBEDDED_SFU=false
 
 ## 4. systemd
 
-`/etc/systemd/system/owl-server.service`：
+`/etc/systemd/system/newt-server.service`：
 
 ```ini
 [Unit]
@@ -127,9 +127,9 @@ Requires=docker.service
 
 [Service]
 Type=simple
-WorkingDirectory=/opt/owlspeak
-EnvironmentFile=/opt/owlspeak/owl-server.env
-ExecStart=/opt/owlspeak/bin/owl-server
+WorkingDirectory=/opt/newtspeak
+EnvironmentFile=/opt/newtspeak/newt-server.env
+ExecStart=/opt/newtspeak/bin/newt-server
 Restart=on-failure
 RestartSec=3
 LimitNOFILE=1048576
@@ -148,7 +148,7 @@ journalctl -u owl-server -f
 ## 5. Caddy（面板 TLS）
 
 ```caddyfile
-owl-panel.example.com {
+newt-panel.example.com {
 	encode gzip zstd
 	reverse_proxy 127.0.0.1:8080 {
 		header_up Host {host}
@@ -167,7 +167,7 @@ systemctl reload caddy
 
 ```bash
 curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8080/
-# 公网：https://owl-panel.example.com
+# 公网：https://newt-panel.example.com
 ```
 
 - 空库首次注册账号 → 自动成为系统管理员；之后 `/signup` 关闭。
@@ -177,11 +177,11 @@ curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8080/
 
 ```bash
 systemctl stop owl-server
-install -D owl-server-new /opt/owlspeak/bin/owl-server
+install -D newt-server-new /opt/newtspeak/bin/newt-server
 systemctl start owl-server
 ```
 
-保留 `owl-server.env` 与 `data/server/`（含集群 CA / Media Token 密钥，勿丢）。
+保留 `newt-server.env` 与 `data/server/`（含集群 CA / Media Token 密钥，勿丢）。
 
 ## 一键脚本（同机 Server+SFU）
 
